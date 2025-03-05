@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('canvases', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('apellido');
-            $table->string('email')->unique();
-            
-            $table->timestamps();
+            $table->string('title');
+            $table->string('cloudinary_id')->nullable();
+            $table->string('cloudinary_url')->nullable();
+            $table->text('canvas_data')->nullable(); // Para guardar el JSON del canvas
+        $table->timestamps();
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('canvases');
     }
 };

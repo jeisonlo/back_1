@@ -42,4 +42,23 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+
+    public function mapadesuenos (){
+        return $this->hasMany('App\Models\mapadesueno');
+    }
+
+    public function libros (){
+        return $this->hasMany('App\Models\libro');
+    }
+
+    public function comentarios (){
+        return $this->hasMany('App\Models\comentario');
+    }
+
+    public function calificacion (){
+        return $this->hasOne('App\Models\calificacion');
+    }
+
 }
