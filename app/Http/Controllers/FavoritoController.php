@@ -126,4 +126,14 @@ class FavoritoController extends Controller
             'isFavorite' => $isFavorite
         ]);
     }
+
+    public function generateSession()
+{
+    // Generate a unique session ID
+    $sessionId = Str::uuid()->toString();
+    
+    return response()->json([
+        'session_id' => $sessionId
+    ]);
+}
 }
