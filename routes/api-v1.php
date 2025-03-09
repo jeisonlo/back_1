@@ -87,11 +87,13 @@ Route::put('/seguimiento/regresar/{id}', [SeguimientoController::class, 'regresa
 Route::get('/arte', [ArteController::class, 'index'])->name('arte.index');
 Route::get('/arte/{id}', [ArteController::class, 'show'])->name('arte.show');
 
-// Rutas para los favoritos
 
-// Rutas para los favoritos
-Route::get('/favoritos', [FavoritoController::class, 'index']);
-Route::post('/favoritos', [FavoritoController::class, 'store']);
-Route::delete('/favoritos/{id}', [FavoritoController::class, 'destroy']);
-Route::get('/favoritos/check/{id}', [FavoritoController::class, 'checkStatus']);
-
+Route::prefix('v1')->group(function () {
+    // Existing routes here...
+    
+    // Favorites routes
+    Route::get('/favoritos', [FavoritoController::class, 'index']);
+    Route::post('/favoritos', [FavoritoController::class, 'store']);
+    Route::delete('/favoritos/{id}', [FavoritoController::class, 'destroy']);
+    Route::get('/favoritos/check/{libroId}', [FavoritoController::class, 'checkFavorite']);
+});

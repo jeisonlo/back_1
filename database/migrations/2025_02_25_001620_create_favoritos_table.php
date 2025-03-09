@@ -4,30 +4,31 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateFavoritosTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('favoritos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('libro_id');
-            $table->unsignedBigInteger('user_id')->nullable(); // For future user authentication
-            $table->string('session_id')->nullable(); // For non-authenticated users
+            $table->foreign('libro_id')->references('id')->on('libros')->onDelete('cascade');
+            $table->string('status')->default('active');
             $table->timestamps();
-            
-            // Optional: Add foreign key if you have a libros table
-             $table->foreign('libro_id')->references('id')->on('libros')->onDelete('cascade');
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('favoritos');
     }
-};
+}

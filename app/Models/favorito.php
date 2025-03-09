@@ -1,8 +1,5 @@
 <?php
 
-// app/Models/Favorito.php
-// php artisan make:model Favorito
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,10 +9,11 @@ class Favorito extends Model
 {
     use HasFactory;
 
+    protected $table = 'favoritos';
+    
     protected $fillable = [
-        'libro_id', 
-        'user_id',
-        'session_id'
+        'libro_id',
+        'status'
     ];
 
     public function libro()
