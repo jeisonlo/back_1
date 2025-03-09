@@ -8,6 +8,7 @@ use App\Models\Libro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+
 class FavoritoController extends Controller
 {
     /**
@@ -15,23 +16,33 @@ class FavoritoController extends Controller
      */
     public function index(Request $request)
     {
-        $sessionId = $request->cookie('session_id') ?? $request->session_id;
+        // Intentar obtener session_id de diferentes fuentes (cookie, query param, request body)
+        $sessionId = $request->cookie('favoritos_session_id') ?? 
+                    $request->query('session_id') ?? 
+                    $request->session_id;
         
-        // Si no hay session_id, crear una
+        // Si no hay session_id, crear uno nuevo
         if (!$sessionId) {
             $sessionId = Str::uuid()->toString();
-            // En una implementación real, debes configurar una cookie aquí
         }
         
+        // Obtener favoritos
         $favoritos = Favorito::where('session_id', $sessionId)
-            ->with('libro') // Eager load libro details
-            ->get();
-            
-        return response()->json([
+            ->get(['id', 'libro_id', 'session_id', 'created_at']);
+        
+        // Preparar respuesta
+        $response = response()->json([
             'status' => 'success',
             'data' => $favoritos,
             'session_id' => $sessionId
         ]);
+        
+        // Configurar cookie si no existía previamente
+        if (!$request->cookie('favoritos_session_id')) {
+            $response->cookie('favoritos_session_id', $sessionId, 43200, '/', null, false, false);
+        }
+        
+        return $response;
     }
     
     /**
@@ -40,28 +51,35 @@ class FavoritoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'libro_id' => 'required|integer|exists:libros,id',
+            'libro_id' => 'required|integer',
         ]);
         
-        $sessionId = $request->cookie('session_id') ?? $request->session_id;
+        // Intentar obtener session_id de diferentes fuentes
+        $sessionId = $request->cookie('favoritos_session_id') ?? 
+                    $request->input('session_id');
         
-        // Si no hay session_id, crear una
+        // Si no hay session_id, crear uno nuevo
         if (!$sessionId) {
             $sessionId = Str::uuid()->toString();
-            // En una implementación real, debes configurar una cookie aquí
         }
         
         // Verificar si ya existe
         $existingFavorito = Favorito::where('libro_id', $request->libro_id)
             ->where('session_id', $sessionId)
             ->first();
-            
+        
+        // Si ya existe, devolver éxito (idempotente)
         if ($existingFavorito) {
-            return response()->json([
-                'status' => 'error',
+            $response = response()->json([
+                'status' => 'success',
                 'message' => 'Este libro ya está en favoritos',
                 'session_id' => $sessionId
-            ], 422);
+            ]);
+            
+            // Asegurar que la cookie esté configurada
+            $response->cookie('favoritos_session_id', $sessionId, 43200, '/', null, false, false);
+            
+            return $response;
         }
         
         // Crear el favorito
@@ -70,16 +88,18 @@ class FavoritoController extends Controller
             'session_id' => $sessionId,
         ]);
         
-        // Obtener los detalles completos del libro
-        $libro = Libro::find($request->libro_id);
-        $favorito->libro = $libro;
-        
-        return response()->json([
+        // Preparar respuesta
+        $response = response()->json([
             'status' => 'success',
             'message' => 'Libro añadido a favoritos',
             'data' => $favorito,
             'session_id' => $sessionId
         ]);
+        
+        // Configurar cookie
+        $response->cookie('favoritos_session_id', $sessionId, 43200, '/', null, false, false);
+        
+        return $response;
     }
     
     /**
@@ -87,18 +107,28 @@ class FavoritoController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $sessionId = $request->cookie('session_id') ?? $request->session_id;
+        // Obtener session_id (de cookie o query param)
+        $sessionId = $request->cookie('favoritos_session_id') ?? 
+                    $request->query('session_id');
+        
+        if (!$sessionId) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Se requiere session_id'
+            ], 400);
+        }
         
         // Buscar el favorito
         $favorito = Favorito::where('libro_id', $id)
             ->where('session_id', $sessionId)
             ->first();
-            
+        
+        // Si no existe, considerarlo como éxito (idempotente)
         if (!$favorito) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Favorito no encontrado'
-            ], 404);
+                'status' => 'success',
+                'message' => 'El libro no estaba en favoritos'
+            ]);
         }
         
         // Eliminar el favorito
@@ -115,15 +145,26 @@ class FavoritoController extends Controller
      */
     public function checkStatus(Request $request, $id)
     {
-        $sessionId = $request->cookie('session_id') ?? $request->session_id;
+        // Obtener session_id (de cookie o query param)
+        $sessionId = $request->cookie('favoritos_session_id') ?? 
+                    $request->query('session_id');
+        
+        // Si no hay session_id, considerarlo como no favorito
+        if (!$sessionId) {
+            return response()->json([
+                'status' => 'success',
+                'isFavorite' => false
+            ]);
+        }
         
         $isFavorite = Favorito::where('libro_id', $id)
             ->where('session_id', $sessionId)
             ->exists();
-            
+        
         return response()->json([
             'status' => 'success',
             'isFavorite' => $isFavorite
         ]);
     }
 }
+
