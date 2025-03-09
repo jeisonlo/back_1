@@ -8,7 +8,7 @@ use App\Models\Libro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Log;
 class FavoritoController extends Controller
 {
     /**
@@ -50,56 +50,73 @@ class FavoritoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'libro_id' => 'required|integer',
-        ]);
-        
-        // Intentar obtener session_id de diferentes fuentes
-        $sessionId = $request->cookie('favoritos_session_id') ?? 
-                    $request->input('session_id');
-        
-        // Si no hay session_id, crear uno nuevo
-        if (!$sessionId) {
-            $sessionId = Str::uuid()->toString();
-        }
-        
-        // Verificar si ya existe
-        $existingFavorito = Favorito::where('libro_id', $request->libro_id)
-            ->where('session_id', $sessionId)
-            ->first();
-        
-        // Si ya existe, devolver éxito (idempotente)
-        if ($existingFavorito) {
+        try {
+            $request->validate([
+                'libro_id' => 'required|integer',
+            ]);
+            
+            // Verificar si el libro existe
+            $libro = Libro::find($request->libro_id);
+            if (!$libro) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'El libro no existe'
+                ], 404);
+            }
+            
+            // Intentar obtener session_id de diferentes fuentes
+            $sessionId = $request->cookie('favoritos_session_id') ?? 
+                        $request->input('session_id');
+            
+            // Si no hay session_id, crear uno nuevo
+            if (!$sessionId) {
+                $sessionId = Str::uuid()->toString();
+            }
+            
+            // Verificar si ya existe
+            $existingFavorito = Favorito::where('libro_id', $request->libro_id)
+                ->where('session_id', $sessionId)
+                ->first();
+            
+            // Si ya existe, devolver éxito (idempotente)
+            if ($existingFavorito) {
+                $response = response()->json([
+                    'status' => 'success',
+                    'message' => 'Este libro ya está en favoritos',
+                    'session_id' => $sessionId
+                ]);
+                
+                // Asegurar que la cookie esté configurada
+                $response->cookie('favoritos_session_id', $sessionId, 43200, '/', null, false, false);
+                
+                return $response;
+            }
+            
+            // Crear el favorito
+            $favorito = Favorito::create([
+                'libro_id' => $request->libro_id,
+                'session_id' => $sessionId,
+            ]);
+            
+            // Preparar respuesta
             $response = response()->json([
                 'status' => 'success',
-                'message' => 'Este libro ya está en favoritos',
+                'message' => 'Libro añadido a favoritos',
+                'data' => $favorito,
                 'session_id' => $sessionId
             ]);
             
-            // Asegurar que la cookie esté configurada
+            // Configurar cookie
             $response->cookie('favoritos_session_id', $sessionId, 43200, '/', null, false, false);
             
             return $response;
+        } catch (\Exception $e) {
+            Log::error('Error en FavoritoController@store: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al procesar la solicitud: ' . $e->getMessage()
+            ], 500);
         }
-        
-        // Crear el favorito
-        $favorito = Favorito::create([
-            'libro_id' => $request->libro_id,
-            'session_id' => $sessionId,
-        ]);
-        
-        // Preparar respuesta
-        $response = response()->json([
-            'status' => 'success',
-            'message' => 'Libro añadido a favoritos',
-            'data' => $favorito,
-            'session_id' => $sessionId
-        ]);
-        
-        // Configurar cookie
-        $response->cookie('favoritos_session_id', $sessionId, 43200, '/', null, false, false);
-        
-        return $response;
     }
     
     /**
