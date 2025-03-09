@@ -88,11 +88,10 @@ Route::get('/arte', [ArteController::class, 'index'])->name('arte.index');
 Route::get('/arte/{id}', [ArteController::class, 'show'])->name('arte.show');
 
 // Rutas para los favoritos
+
+// Rutas para los favoritos
 Route::get('/favoritos', [FavoritoController::class, 'index']);
 Route::post('/favoritos', [FavoritoController::class, 'store']);
 Route::delete('/favoritos/{id}', [FavoritoController::class, 'destroy']);
 Route::get('/favoritos/check/{id}', [FavoritoController::class, 'checkStatus']);
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-  //  return $request->user();
-//});
-Route::get('/favoritos/session', [FavoritoController::class, 'generateSession']);
+
