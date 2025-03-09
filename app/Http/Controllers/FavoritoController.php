@@ -51,6 +51,12 @@ class FavoritoController extends Controller
     public function store(Request $request)
     {
         try {
+            Log::info('Recibida solicitud para añadir favorito', [
+                'request_data' => $request->all(),
+                'cookies' => $request->cookie(),
+                'headers' => $request->header()
+            ]);
+    
             $request->validate([
                 'libro_id' => 'required|integer',
             ]);
@@ -58,38 +64,40 @@ class FavoritoController extends Controller
             // Verificar si el libro existe
             $libro = Libro::find($request->libro_id);
             if (!$libro) {
+                Log::warning('Intento de añadir favorito de libro inexistente', [
+                    'libro_id' => $request->libro_id
+                ]);
                 return response()->json([
                     'status' => 'error',
                     'message' => 'El libro no existe'
                 ], 404);
             }
             
-            // Intentar obtener session_id de diferentes fuentes, con prioridad clara
+            // Generar siempre un nuevo session_id si no existe
             $sessionId = $request->cookie('favoritos_session_id') ?? 
-                         $request->input('session_id') ?? 
-                         $request->header('X-Session-ID');
+                        $request->input('session_id') ?? 
+                        Str::uuid()->toString();
             
-            // Si no hay session_id, crear uno nuevo
-            if (!$sessionId) {
-                $sessionId = Str::uuid()->toString();
-            }
+            Log::info('Procesando favorito con session_id', [
+                'session_id' => $sessionId,
+                'libro_id' => $request->libro_id
+            ]);
             
-            // Verificar si ya existe este favorito
+            // Verificar si ya existe
             $existingFavorito = Favorito::where('libro_id', $request->libro_id)
                 ->where('session_id', $sessionId)
                 ->first();
             
-            // Si ya existe, devolver éxito
+            // Si ya existe, devolver éxito (idempotente)
             if ($existingFavorito) {
                 $response = response()->json([
                     'status' => 'success',
                     'message' => 'Este libro ya está en favoritos',
-                    'data' => $existingFavorito,
                     'session_id' => $sessionId
                 ]);
                 
                 // Asegurar que la cookie esté configurada
-                $response->cookie('favoritos_session_id', $sessionId, 43200, '/', null, false, true);
+                $response->cookie('favoritos_session_id', $sessionId, 43200, '/', null, false, false);
                 
                 return $response;
             }
@@ -100,6 +108,11 @@ class FavoritoController extends Controller
             $favorito->session_id = $sessionId;
             $favorito->save();
             
+            Log::info('Favorito creado exitosamente', [
+                'favorito_id' => $favorito->id,
+                'session_id' => $sessionId
+            ]);
+            
             // Preparar respuesta
             $response = response()->json([
                 'status' => 'success',
@@ -108,13 +121,16 @@ class FavoritoController extends Controller
                 'session_id' => $sessionId
             ]);
             
-            // Configurar cookie con SameSite=None para permitir peticiones cross-origin
-            $response->cookie('favoritos_session_id', $sessionId, 43200, '/', null, true, false);
+            // Configurar cookie
+            $response->cookie('favoritos_session_id', $sessionId, 43200, '/', null, false, false);
             
             return $response;
         } catch (\Exception $e) {
-            Log::error('Error en FavoritoController@store: ' . $e->getMessage());
-            Log::error($e->getTraceAsString());
+            Log::error('Error en FavoritoController@store: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
+            
             return response()->json([
                 'status' => 'error',
                 'message' => 'Error al procesar la solicitud: ' . $e->getMessage()
