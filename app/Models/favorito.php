@@ -22,4 +22,5 @@ class Favorito extends Model
     {
         return $this->belongsTo(Libro::class);
     }
+    
 }

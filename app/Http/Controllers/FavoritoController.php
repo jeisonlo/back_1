@@ -68,8 +68,10 @@ class FavoritoController extends Controller
     public function store(Request $request)
     {
         try {
+            // Log the full request for debugging
             Log::info('Recibida solicitud para añadir favorito', [
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
+                'headers' => $request->headers->all()
             ]);
     
             // Validar datos de entrada
@@ -121,6 +123,14 @@ class FavoritoController extends Controller
             $favorito = new Favorito();
             $favorito->libro_id = $libroId;
             $favorito->session_id = $sessionId;
+            
+            // Ensure we're not missing any required fields
+            Log::info('Favorito object before save', [
+                'libro_id' => $favorito->libro_id,
+                'session_id' => $favorito->session_id,
+                'model_fields' => array_keys($favorito->getAttributes())
+            ]);
+            
             $favorito->save();
             
             Log::info('Favorito creado exitosamente', [
@@ -150,16 +160,19 @@ class FavoritoController extends Controller
         } catch (\Exception $e) {
             Log::error('Error en FavoritoController@store: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
+                'error_line' => $e->getLine(),
+                'error_file' => $e->getFile()
             ]);
             
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error al procesar la solicitud: ' . $e->getMessage()
+                'message' => 'Error al procesar la solicitud: ' . $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
             ], 500);
         }
     }
-    
     /**
      * Eliminar un libro de favoritos
      */
