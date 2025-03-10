@@ -12,15 +12,14 @@ class Favorito extends Model
 {
     use HasFactory;
 
-  // app/Models/Favorito.php
-protected $fillable = [
-    'libro_id', 
-    'session_id'
-];
+    protected $fillable = [
+        'libro_id', 
+        'user_id',
+        'session_id'
+    ];
 
     public function libro()
     {
         return $this->belongsTo(Libro::class);
     }
-    
 }

@@ -87,7 +87,8 @@ Route::put('/seguimiento/regresar/{id}', [SeguimientoController::class, 'regresa
 Route::get('/arte', [ArteController::class, 'index'])->name('arte.index');
 Route::get('/arte/{id}', [ArteController::class, 'show'])->name('arte.show');
 
-// Rutas para los favoritos
+
+
 
 // Rutas para los favoritos
 Route::get('/favoritos', [FavoritoController::class, 'index']);
