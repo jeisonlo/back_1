@@ -130,6 +130,8 @@ class FavoritoController extends Controller
                 'session_id' => $favorito->session_id,
                 'model_fields' => array_keys($favorito->getAttributes())
             ]);
+            // In the store method, add this line right before $favorito->save();
+$favorito->user_id = Auth::id() ?? null; // Set to null if not authenticated
             
             $favorito->save();
             
