@@ -15,7 +15,13 @@ class FavoritoController extends Controller
      */
     public function index(Request $request)
     {
-        $sessionId = $request->cookie('session_id') ?? $request->session_id;
+        $sessionId = session('session_id', $request->session_id);
+
+        if (!$sessionId) {
+            $sessionId = Str::uuid()->toString();
+            session(['session_id' => $sessionId]);
+        }
+        
         
         // Si no hay session_id, crear una
         if (!$sessionId) {
@@ -43,7 +49,13 @@ class FavoritoController extends Controller
             'libro_id' => 'required|integer|exists:libros,id',
         ]);
         
-        $sessionId = $request->cookie('session_id') ?? $request->session_id;
+        $sessionId = session('session_id', $request->session_id);
+
+        if (!$sessionId) {
+            $sessionId = Str::uuid()->toString();
+            session(['session_id' => $sessionId]);
+        }
+        
         
         // Si no hay session_id, crear una
         if (!$sessionId) {
@@ -87,7 +99,13 @@ class FavoritoController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $sessionId = $request->cookie('session_id') ?? $request->session_id;
+        $sessionId = session('session_id', $request->session_id);
+
+if (!$sessionId) {
+    $sessionId = Str::uuid()->toString();
+    session(['session_id' => $sessionId]);
+}
+
         
         // Buscar el favorito
         $favorito = Favorito::where('libro_id', $id)
@@ -115,7 +133,13 @@ class FavoritoController extends Controller
      */
     public function checkStatus(Request $request, $id)
     {
-        $sessionId = $request->cookie('session_id') ?? $request->session_id;
+        $sessionId = session('session_id', $request->session_id);
+
+if (!$sessionId) {
+    $sessionId = Str::uuid()->toString();
+    session(['session_id' => $sessionId]);
+}
+
         
         $isFavorite = Favorito::where('libro_id', $id)
             ->where('session_id', $sessionId)
