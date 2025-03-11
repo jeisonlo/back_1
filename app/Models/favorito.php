@@ -18,6 +18,7 @@ class Favorito extends Model
         'session_id'
     ];
 
+    
     public function libro()
     {
         return $this->belongsTo(Libro::class);
