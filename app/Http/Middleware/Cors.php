@@ -7,15 +7,18 @@ use Illuminate\Http\Request;
 
 class Cors
 {
-    public function handle(Request $request, Closure $next)
-    {
-        return $next($request)
-            ->header('Access-Control-Allow-Origin', 'https://front1-production.up.railway.app') // Permite peticiones de cualquier origen
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-            ->header('Access-Control-Allow-Credentials', 'true'); // Esto es clave
-
-              // Responder a preflight request (OPTIONS)
+   // In App\Http\Middleware\Cors.php
+public function handle(Request $request, Closure $next)
+{
+    $response = $next($request);
+    
+    // Add these headers to all responses
+    $response->headers->set('Access-Control-Allow-Origin', 'https://front1-production.up.railway.app');
+    $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    $response->headers->set('Access-Control-Allow-Credentials', 'true');
+    
+    // Respond to preflight requests
     if ($request->isMethod('OPTIONS')) {
         return response('', 200)->withHeaders([
             'Access-Control-Allow-Origin' => 'https://front1-production.up.railway.app',
@@ -24,9 +27,7 @@ class Cors
             'Access-Control-Allow-Credentials' => 'true',
         ]);
     }
-
-    return $response;
-    }
-
     
+    return $response;
+}
 }

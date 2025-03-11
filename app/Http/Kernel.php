@@ -61,7 +61,7 @@ class Kernel extends HttpKernel
     ];
 
     protected $middleware = [
-        \App\Http\Middleware\CorsMiddleware::class, // Agrega esta línea
+       
         \App\Http\Middleware\TrustProxies::class,
         \App\Http\Middleware\Cors::class, // Asegura que está aquí
         \Illuminate\Http\Middleware\HandleCors::class, // Asegúrate de que esta línea también esté
