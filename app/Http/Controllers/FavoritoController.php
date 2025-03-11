@@ -119,13 +119,15 @@ if (!$sessionId) {
      */
     public function checkStatus(Request $request, $id)
     {
-        $sessionId = session('session_id', $request->session_id);
-
-if (!$sessionId) {
-    $sessionId = Str::uuid()->toString();
-    session(['session_id' => $sessionId]);
-}
-
+        // Get session ID directly from request parameter
+        $sessionId = $request->query('session_id');
+        
+        if (!$sessionId) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No session ID provided'
+            ], 400);
+        }
         
         $isFavorite = Favorito::where('libro_id', $id)
             ->where('session_id', $sessionId)
