@@ -15,8 +15,18 @@ class CorsMiddleware
         $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
         $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         $response->headers->set('Access-Control-Allow-Credentials', 'true');
-        
+          // Responder a preflight request (OPTIONS)
+    if ($request->isMethod('OPTIONS')) {
+        return response('', 200)->withHeaders([
+            'Access-Control-Allow-Origin' => 'https://front1-production.up.railway.app',
+            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With',
+            'Access-Control-Allow-Credentials' => 'true',
+        ]);
+    }
 
-        return $response;
+    return $response;
+
+       
     }
 }
