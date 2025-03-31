@@ -63,6 +63,7 @@ Route::get('/api/libros/{id}', [LibroController::class, 'libroPorId']);
 Route::get('/libros/{id}', [LibroController::class, 'mostrarLibro']);
 
 
+
 //Rutas para el mapa de sueños
 Route::post('mapadesueños', [MapaDeSuenoController::class, 'store'])->name('api.v1.mapadesueños.store');
 Route::get('mapadesueños', [MapaDeSuenoController::class, 'index'])->name('api.v1.mapadesueños.index');
