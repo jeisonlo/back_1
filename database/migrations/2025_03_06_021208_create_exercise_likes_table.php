@@ -11,18 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('exercise_likes', function (Blueprint $table) {
             $table->id();
-
-            $table->string('nombre');
-            $table->string('apellido');
-            $table->string('email')->unique();
-            
-
-            $table->string('name');
-            $table->rememberToken();
-
+            $table->unsignedBigInteger('exercise_id'); // Solo guardamos el ID del ejercicio
             $table->timestamps();
+
+            $table->foreign('exercise_id')->references('id')->on('exercises')->onDelete('cascade');
         });
     }
 
@@ -31,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('exercise_likes');
     }
 };

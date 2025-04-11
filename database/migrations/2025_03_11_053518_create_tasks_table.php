@@ -11,17 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-
-            $table->string('nombre');
-            $table->string('apellido');
-            $table->string('email')->unique();
-            
-
-            $table->string('name');
-            $table->rememberToken();
-
+            $table->string('title');
+            $table->text('details');
+            $table->date('date'); // Para asociar la tarea a un día específico
             $table->timestamps();
         });
     }
@@ -31,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('tasks');
     }
 };
