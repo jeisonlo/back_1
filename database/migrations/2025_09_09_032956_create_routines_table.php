@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('routines', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->rememberToken();
+            $table->foreignId('exercise_id')->constrained()->onDelete('cascade'); // Relación con categorías
+            $table->text('descripcion');
+            $table->string('video_url')->nullable(); // URL del video (opcional)
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('routines');
     }
 };
