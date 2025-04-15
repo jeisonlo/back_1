@@ -43,7 +43,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-<<<<<<< HEAD
 
 
     public function mapadesuenos (){
@@ -62,7 +61,7 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\calificacion');
     }
 
-=======
+
     protected $allowIncluded = ['comentario','historial','rutina','tarea']; //las posibles Querys que se pueden realizar
     
     protected $allowFilter = ['id', 'name'];
@@ -116,5 +115,5 @@ class User extends Authenticatable
     }
 
 
->>>>>>> ejercicios
+
 }
