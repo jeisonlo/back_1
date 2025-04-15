@@ -1,5 +1,5 @@
 <?php
-/*
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -31,4 +31,3 @@ public function handle(Request $request, Closure $next)
     return $response;
 }
 }
-*/
