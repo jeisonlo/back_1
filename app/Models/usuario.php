@@ -26,8 +26,9 @@ class Usuario extends Authenticatable
         'estudios',
         'acerca_de_mi',
         'foto'
+        
     ];
-
+//
     protected $hidden = [
         'password',
         'remember_token',
