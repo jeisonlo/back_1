@@ -1,19 +1,23 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\ForoController;
+use App\Http\Controllers\InformacionFrutaController;
+use App\Http\Controllers\ObjetivoSaludController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TestBienestarController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/test-bienestar', [TestBienestarController::class, 'store']);
+
+Route::get('frutas', [InformacionFrutaController::class, 'index']);
+Route::get('frutas/{id}', [InformacionFrutaController::class, 'show']);
+
+Route::post('/objetivos', [ObjetivoSaludController::class, 'store']);
+Route::get('/progreso', [ObjetivoSaludController::class, 'getProgressData']);
+
+Route::get('/foro', [ForoController::class, 'index']);
+Route::post('/foro', [ForoController::class, 'store']);
+Route::put('/foro/{foro}', [ForoController::class, 'update']);
+Route::delete('/foro/{foro}', [ForoController::class, 'destroy']);
+Route::post('/foro/{foro}/like', [ForoController::class, 'like']);
+Route::post('/foro/{foro}/comentario', [ForoController::class, 'comment']);
