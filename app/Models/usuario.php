@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens; // Necesario para tokens API
 
-class Usuario extends Authenticatable
+class usuario extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 

@@ -21,12 +21,6 @@ class Profesional extends Authenticatable {
     'nivel_educativo',
     'fecha_nacimiento',
     'genero',
-    'codigo_recuperacion',
-    'vive_en',
-    'de_donde_es',
-    'estudios',
-    'acerca_de_mi',
-    'foto'
     ];
 
     protected $hidden = [
