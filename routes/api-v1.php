@@ -180,6 +180,9 @@ Route::post('upload-image', [CloudinaryController::class, 'uploadImage']);
 
 
 
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 Route::post('/registrar-usuario', [ControllersUsuarioController::class, 'registrarUsuario']);
 
