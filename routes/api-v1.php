@@ -2,6 +2,7 @@
 
 
 
+
 use App\Http\Controllers\Api\FavoritoController as ApiFavoritoController;
 use App\Http\Controllers\ArteController;
 use App\Http\Controllers\CalificacionController;
@@ -12,8 +13,7 @@ use App\Http\Controllers\MapaDeSuenoController;
 use App\Http\Controllers\PromedioCalificacionController;
 use App\Http\Controllers\SeguimientoController;
 use App\Models\Categorialibro;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\CanvasController;
 use App\Http\Controllers\FavoritoController;
 use App\Models\Favorito;
@@ -41,6 +41,15 @@ use App\Http\Controllers\RecuperacionController;
 use App\Http\Controllers\UsuarioController as ControllersUsuarioController;
 
 
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\PaymentController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -51,6 +60,7 @@ use App\Http\Controllers\UsuarioController as ControllersUsuarioController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
 
 
 Route::get('/', function () {
@@ -175,9 +185,12 @@ Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
 Route::post('upload-image', [CloudinaryController::class, 'uploadImage']);
 
 
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 
 
 Route::post('/registrar-usuario', [ControllersUsuarioController::class, 'registrarUsuario']);
@@ -209,4 +222,20 @@ Route::post('/perfil/{id}/actualizar-foto', [PerfilController::class, 'actualiza
     Route::get('/tips', [TipController::class, 'index']);
     Route::post('/tips/create', [TipController::class, 'createTip']);
     Route::get('/tips/{id}', [TipController::class, 'show']);
+
+
+// Ruta resource para AppointmentController
+Route::resource('appointments', AppointmentController::class);
+
+// Ruta resource para DocumentController
+Route::resource('documents', DocumentController::class);
+
+// Rutas
+Route::resource('reports', ReportController::class);
+
+// Ruta
+Route::resource('reviews', ReviewController::class);
+
+// Ruta
+Route::resource('payments', PaymentController::class);
 
