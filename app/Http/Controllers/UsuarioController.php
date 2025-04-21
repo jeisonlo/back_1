@@ -19,7 +19,7 @@ class UsuarioController extends Controller
             'genero' => 'required|string'
         ]);
 
-        $usuario = Usuario::create([
+        $usuario = usuario::create([
             'nombre' => $request->nombre,
             'apellidos' => $request->apellidos,
             'email' => $request->email,
