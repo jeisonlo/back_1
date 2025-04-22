@@ -3,13 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens; // Necesario para tokens API
+use Laravel\Sanctum\HasApiTokens;
 
-class usuario extends Authenticatable
+class Usuario extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, Notifiable;
 
     protected $table = 'usuarios';
 
@@ -20,23 +19,25 @@ class usuario extends Authenticatable
         'password',
         'fecha_nacimiento',
         'genero',
-        'codigo_recuperacion',
         'vive_en',
         'de_donde_es',
         'estudios',
         'acerca_de_mi',
         'foto'
-        
     ];
-//
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
         'fecha_nacimiento' => 'date',
     ];
-    
+    protected $appends = ['foto_url'];
+
+public function getFotoUrlAttribute()
+{
+    return $this->foto ?: null; // Ya tienes la URL completa guardada
+}
 }

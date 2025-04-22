@@ -13,7 +13,7 @@ class ProfesionalController extends Controller
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
-            'email' => 'required|email|unique:profesionales|max:255',
+            'email' => 'required|email|unique:profesionales',
             'password' => 'required|string|min:8',
             'licencia' => 'required|string|unique:profesionales',
             'nivel_educativo' => 'required|in:Psicólogo,Psiquiatra,Terapeuta,Counselor',
@@ -30,4 +30,7 @@ class ProfesionalController extends Controller
             'profesional' => $profesional
         ], 201);
     }
+
+
+    
 }

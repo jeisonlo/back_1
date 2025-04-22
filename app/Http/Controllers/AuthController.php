@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\usuario;
+use App\Models\Usuario;
 use App\Models\Profesional;
 
 class AuthController extends Controller
@@ -16,7 +16,7 @@ class AuthController extends Controller
         ]);
 
         // Buscar en la tabla de usuarios
-        $usuario = usuario::where('email', $request->email)->first();
+        $usuario = Usuario::where('email', $request->email)->first();
         if ($usuario && Hash::check($request->password, $usuario->password)) {
             $token = $usuario->createToken('usuario_token')->plainTextToken;
             return response()->json([

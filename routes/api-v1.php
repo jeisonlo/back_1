@@ -53,7 +53,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ForoController;
 use App\Http\Controllers\InformacionFrutaController;
 use App\Http\Controllers\ObjetivoSaludController;
-
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TestBienestarController;
 
 /*
@@ -218,13 +218,12 @@ Route::post('/validar-codigo', [RecuperacionController::class, 'validarCodigo'])
 Route::post('/restablecer-contrasena', [RecuperacionController::class, 'cambiarContrasena']);
 
 
-
-Route::post('/perfil/{id}/actualizar', [PerfilController::class, 'actualizarPerfil'])
-    ->middleware('auth:sanctum');
-
-// Ruta para actualizar solo la foto
-Route::post('/perfil/{id}/actualizar-foto', [PerfilController::class, 'actualizarFoto'])
-    ->middleware('auth:sanctum');
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Perfil
+    Route::get('/profile', [ProfileController::class, 'show']); // GET Datos del perfil
+    Route::put('/profile', [ProfileController::class, 'update']); // PUT Actualizar perfil
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto']); // POST Foto
+});
 
 
    
