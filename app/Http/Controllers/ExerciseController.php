@@ -39,8 +39,8 @@ class ExerciseController extends Controller
         'category_id' => 'required|exists:categories,id',
         'name' => 'required|string|max:255',
         'description' => 'required|string',
-        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // Máximo 5MB
-        'video' => 'required|file|mimes:mp4,mov,avi|max:100000', // Máximo 100MB
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // Máximo 5MB
+        'video' => 'nullable|file|mimes:mp4,mov,avi|max:100000', // Máximo 100MB
     ]);
 
     try {
