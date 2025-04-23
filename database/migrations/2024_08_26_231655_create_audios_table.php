@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('image_file')->nullable(); 
-            $table->string('audio_file')->unique();  
+            $table->string('audio_file')->nullable();  
             $table->integer('duration')->comment('seconds');
             $table->foreignId('genre_id')->constrained('genres')->onDelete('cascade');
             $table->foreignId('album_id')->nullable()->constrained('albums')->onDelete('cascade');      
