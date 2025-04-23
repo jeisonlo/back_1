@@ -285,7 +285,7 @@ Route::post('/foro/{foro}/comentario', [ForoController::class, 'comment']);
 
 
     //login
-    Route::post('login', [LoginController::class, 'login']);
+   
 
     // Géneros
     Route::get('/genres', [GenreController::class, 'index']);
