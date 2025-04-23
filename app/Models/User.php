@@ -4,30 +4,15 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-
 use Illuminate\Database\Eloquent\Builder;
-
-use App\Traits\ApiTrait;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-use Illuminate\Contracts\Auth\CanResetPassword;
-
-class User extends Authenticatable implements CanResetPassword
-
+class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, ApiTrait;
-    protected $table = 'users';
-
-     //Listas Blancas
-     protected $allowIncluded = ['likes', 'histories', 'playlists'];
-     protected $allowFilter = ['id', 'name'];
-     protected $allowSort = ['id', 'name'];
-
-
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -36,13 +21,8 @@ class User extends Authenticatable implements CanResetPassword
      */
     protected $table = 'usuarios';
     protected $fillable = [
-
         'nombre',
         'apellidos',
-
-        'name',
-        'birthdate',
-
         'email',
         'password',
         'fecha_nacimiento',
@@ -75,7 +55,6 @@ class User extends Authenticatable implements CanResetPassword
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
 
 
 
@@ -149,31 +128,5 @@ class User extends Authenticatable implements CanResetPassword
     }
 
     
-
-    /**
-     * Relación de uno a muchos con el modelo Playlist.
-     */
-    public function playlists()
-    {
-        return $this->hasMany(Playlist::class);
-    }
-
-    /**
-     * Relación de uno a muchos con el modelo Like.
-     */
-    public function likes()
-    {
-        return $this->hasMany(Like::class);
-    }
-
-    /**
-     * Relación de uno a muchos con el modelo History.
-     */
-    public function histories()
-    {
-        return $this->hasMany(History::class);
-    }
-
-
 
 }
