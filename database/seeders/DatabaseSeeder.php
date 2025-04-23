@@ -18,12 +18,12 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-       /* $this->call([
+        $this->call([
             GenreSeeder::class,
             AlbumSeeder::class,
             UserSeeder::class,
             PodcastSeeder::class,
         ]);
-*/
+
     }
 }
