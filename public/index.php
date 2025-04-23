@@ -4,6 +4,8 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
+ini_set('upload_max_filesize', '20M');
+ini_set('post_max_size', '20M');
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +55,5 @@ $response = $kernel->handle(
 )->send();
 
 $kernel->terminate($request, $response);
+
+
