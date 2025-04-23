@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('histories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->date('birthdate');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Relación con el usuario que reproduce el contenido
+            $table->morphs('historable'); // Relación polimórfica
+            $table->timestamp('played_at')->nullable(); // Fecha y hora de reproducción
+            
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('histories');
     }
 };

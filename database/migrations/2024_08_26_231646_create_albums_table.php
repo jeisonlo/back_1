@@ -9,16 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+     //http://tranquilidad.test/v1/albums
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('albums', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->date('birthdate');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->string('image_path')->nullable();
+            $table->string('cloudinary_public_id')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('albums');
     }
 };
