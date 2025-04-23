@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -23,3 +23,4 @@ class UserSeeder extends Seeder
         $this->command->info('Password: 123456');
     }
 }
+*/

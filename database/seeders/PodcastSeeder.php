@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -53,3 +53,4 @@ class PodcastSeeder extends Seeder
         }
     }
 }
+*/
